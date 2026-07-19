@@ -1,5 +1,5 @@
 ---
-name: gloss-aristotle
+name: classical-gloss
 description: Locate the original-language primary source for a classical/ancient text (Greek, Latin, etc.) and build word-by-word interlinear ("trilinear") glosses of specific passages -- Greek/Latin line, transliteration, short gloss, aligned in monospace. Use this whenever the user asks to find "the original Greek/Latin," the "untranslated text," or wants a passage "glossed," "interlinear," or "trilinear," especially while working in a wiki, notes, or commentary about an ancient author (Aristotle, Plato, Homer, the New Testament, etc.). Also trigger when the user wants to verify a scholarly citation (Bekker/Stephanus/Loeb/Bekker-line number) against the actual source rather than from memory, or wants etymology grounded in the real inflected word that appears in a passage rather than a dictionary citation form. Don't wait for the user to say "Perseus" or name a specific corpus -- any request to see, quote, or align the underlying ancient-language text for something already being discussed in English should route here.
 ---
 
