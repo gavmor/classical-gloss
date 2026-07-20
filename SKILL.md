@@ -45,7 +45,7 @@ Watch specifically for the citation-form trap: if the sentence uses a genitive p
 
 ## Step 4: Generate the ngloss block
 
-We use the Obsidian Interlinear Glossing plugin's `ngloss` alternative syntax. This syntax uses brackets rather than manual space-padding, making it robust against word length variations and much easier to read and write. Use the bundled script to generate it from your data:
+We use the [Obsidian Interlinear Glossing](https://github.com/mijyuoon/obsidian-ling-gloss) plugin's `ngloss` alternative syntax. This syntax uses brackets rather than manual space-padding, making it robust against word length variations and much easier to read and write. Use the bundled script to generate it from your data:
 
 ```bash
 echo '[["μετὰ","meta","after"],["δὲ","de","and"],["ταῦτα","tauta","these.ACC"]]' \
