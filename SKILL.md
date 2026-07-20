@@ -43,38 +43,58 @@ Walk the sentence word by word, in order — every word gets a column, including
 
 Watch specifically for the citation-form trap: if the sentence uses a genitive plural, gloss the genitive plural, and say so — don't quietly substitute the word's nominative singular dictionary form because that's the "cleaner" one to explain etymology on. If a form's morphology is worth unpacking (a compound, a privative, a recognizable suffix), do that unpacking on the form that's actually in the sentence, cross-referencing the citation form only if it helps ("the actual genitive-plural form here, not the citation form X").
 
-## Step 4: Align it — compute this, don't hand-space it
+## Step 4: Generate the ngloss block
 
-Manually padding columns with spaces looks fine for the first two or three words and then silently drifts as soon as word lengths vary — a four-letter word next to a twelve-letter gloss throws off every column after it. Use the bundled script instead of eyeballing it:
+We use the Obsidian Interlinear Glossing plugin's `ngloss` alternative syntax. This syntax uses brackets rather than manual space-padding, making it robust against word length variations and much easier to read and write. Use the bundled script to generate it from your data:
 
 ```bash
 echo '[["μετὰ","meta","after"],["δὲ","de","and"],["ταῦτα","tauta","these.ACC"]]' \
   | python3 scripts/align_interlinear.py
 ```
 
-It takes a JSON array of words, each word an array of tier-strings (Greek, transliteration, gloss — or more tiers if you want them), and pads each word's own column to fit its longest tier, then joins columns with two spaces. Read the output before using it; if something still looks off, check whether a tier string contains characters that legitimately widen a column (this is expected, not a bug).
+It takes a JSON array of words, each word an array of tier-strings (Greek, transliteration, gloss — or more tiers if you want them), and formats them into the `\gl` command structure where each primary word is followed by bracketed tiers.
 
 ## Step 5: Format the result
 
-One aligned block per full sentence — not broken into many small 4-5 word chunks. Long lines that run wide are fine and preferred; a reader following an interlinear gloss expects to scan a whole sentence across, not hunt through a dozen small tables. Use a plain code fence, not a markdown table — tables force artificial cell-wrapping and don't preserve the monospace alignment the columns depend on.
+One aligned block per full sentence — not broken into many small 4-5 word chunks. The `ngloss` block handles wrapping natively.
 
 The shape, worked from an actual passage (Aristotle, *Nicomachean Ethics* VII.1, Bekker 1145a25-27):
 
 ```markdown
 ### Bk. VII, ch. 1 (Bekker 1145a25-27)
 
-> καὶ γὰρ ὥσπερ οὐδὲ θηρίου ἐστὶ κακία οὐδʼ ἀρετή, οὕτως οὐδὲ θεοῦ, ἀλλʼ ἣ μὲν τιμιώτερον ἀρετῆς, ἣ δʼ ἕτερόν τι γένος κακίας.
-
+\`\`\`ngloss
+\ex καὶ γὰρ ὥσπερ οὐδὲ θηρίου ἐστὶ κακία οὐδʼ ἀρετή, οὕτως οὐδὲ θεοῦ, ἀλλʼ ἣ μὲν τιμιώτερον ἀρετῆς, ἣ δʼ ἕτερόν τι γένος κακίας.
+\gl καὶ [kai] [for]
+    γὰρ [gar] [indeed]
+    ὥσπερ [hōsper] [just-as]
+    οὐδὲ [oude] [not-even]
+    θηρίου [thēriou] [beast.GEN]
+    ἐστὶ [esti] [is]
+    κακία [kakia] [vice]
+    οὐδʼ [oud'] [nor]
+    ἀρετή, [aretē] [virtue]
+    οὕτως [houtōs] [so]
+    οὐδὲ [oude] [not-even]
+    θεοῦ, [theou] [god.GEN]
+    ἀλλʼ [all'] [but]
+    ἣ [hē] [the-one]
+    μὲν [men] [PTCL]
+    τιμιώτερον [timiōteron] [more-honorable]
+    ἀρετῆς, [aretēs] [virtue.GEN]
+    ἣ [hē] [the-other]
+    δʼ [d'] [and]
+    ἕτερόν [heteron] [different.ACC]
+    τι [ti] [a-certain]
+    γένος [genos] [kind.ACC]
+    κακίας. [kakias] [vice.GEN]
+\ft For just as there is neither vice nor virtue belonging to a beast, so too none belonging to a god — but the one state is more honorable than virtue, and the other a different kind from vice.
 \`\`\`
-καὶ  γὰρ     ὥσπερ    οὐδὲ      θηρίου     ἐστὶ  κακία  οὐδʼ  ἀρετή   οὕτως   οὐδὲ      θεοῦ     ἀλλʼ  ἣ        μὲν   τιμιώτερον      ἀρετῆς      ἣ          δʼ   ἕτερόν         τι         γένος     κακίας
-kai  gar     hōsper   oude      thēriou    esti  kakia  oud'  aretē   houtōs  oude      theou    all'  hē       men   timiōteron      aretēs      hē         d'   heteron        ti         genos     kakias
-for  indeed  just-as  not-even  beast.GEN  is    vice   nor   virtue  so      not-even  god.GEN  but   the-one  PTCL  more-honorable  virtue.GEN  the-other  and  different.ACC  a-certain  kind.ACC  vice.GEN
-\`\`\`
 
-*"For just as there is neither vice nor virtue belonging to a beast, so too none belonging to a god — but the one state is more honorable than virtue, and the other a different kind from vice."* [one or two sentences tying a key word's morphology back to whatever point this passage is being cited for]
+[one or two sentences tying a key word's morphology back to whatever point this passage is being cited for]
 ```
 
-The pattern: citation heading, blockquote of the full original-language sentence, one aligned block, then an italicized free translation followed by prose (not another table) connecting it to whatever surrounding argument or claim it's grounding.
+The pattern: citation heading, one ngloss block containing the original text (`\ex`), the gloss (`\gl`), and the translation (`\ft`), followed by prose connecting it to whatever surrounding argument or claim it's grounding.
 
 ## A note on copyright
 
