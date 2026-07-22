@@ -96,16 +96,7 @@ The shape, worked from an actual passage (Aristotle, *Nicomachean Ethics* VII.1,
 
 The pattern: citation heading, one ngloss block containing the original text (`\ex`), the gloss (`\gl`), and the translation (`\ft`), followed by prose connecting it to whatever surrounding argument or claim it's grounding.
 
-## Step 6: Audio Embedding (Optional but Recommended)
 
-When compiling a new gloss block, if you have access to the `/speak-greek` skill, you should use its "Export Mode" to generate an audio file for the passage. Save the file to `assets/audio/<citation>.mp3` (e.g., `assets/audio/1145a25.mp3`), and embed it right above the `ngloss` block like this:
-
-```markdown
-![[1145a25.mp3]]
-
-\`\`\`ngloss
-...
-```
 ## A note on copyright
 
 The ancient text itself and its standard critical edition (Bekker, Bywater, Stephanus, OCT, Loeb Greek/Latin, etc.) are all long out of copyright — quote them as fully and freely as the passage requires. If there's also a modern in-copyright translation sitting alongside it (a named 20th/21st-century translator's English rendering), don't quote that at length; a short phrase here and there is fine, but paraphrase the rest in your own words. The gloss you're building *is* the translation for the purposes of this exercise — that's the whole point of doing it word by word instead of leaning on someone else's finished sentence.
