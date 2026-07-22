@@ -111,7 +111,7 @@ Run the bundled `extract_tei_targets.py` script to pull all sentences matching t
 ```bash
 python3 ~/.gemini/skills/classical-gloss/scripts/extract_tei_targets.py \
   --xml references/nicomachean-ethics-greek.xml \
-  --pattern 'πρ[αάᾶ]ξ[ιε][\p{L}\p{M}]*' \
+  --pattern 'πρ[αάᾶ]ξ[ιε]' \
   --chunk-size 10 \
   --out-prefix chunk_targets
 ```
