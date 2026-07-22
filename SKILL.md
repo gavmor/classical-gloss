@@ -96,10 +96,44 @@ The shape, worked from an actual passage (Aristotle, *Nicomachean Ethics* VII.1,
 
 The pattern: citation heading, one ngloss block containing the original text (`\ex`), the gloss (`\gl`), and the translation (`\ft`), followed by prose connecting it to whatever surrounding argument or claim it's grounding.
 
+## Step 6: Audio Embedding (Optional but Recommended)
+
+When compiling a new gloss block, if you have access to the `/speak-greek` skill, you should use its "Export Mode" to generate an audio file for the passage. Save the file to `assets/audio/<citation>.mp3` (e.g., `assets/audio/1145a25.mp3`), and embed it right above the `ngloss` block like this:
+
+```markdown
+![[1145a25.mp3]]
+
+\`\`\`ngloss
+...
+```
 ## A note on copyright
 
 The ancient text itself and its standard critical edition (Bekker, Bywater, Stephanus, OCT, Loeb Greek/Latin, etc.) are all long out of copyright — quote them as fully and freely as the passage requires. If there's also a modern in-copyright translation sitting alongside it (a named 20th/21st-century translator's English rendering), don't quote that at length; a short phrase here and there is fine, but paraphrase the rest in your own words. The gloss you're building *is* the translation for the purposes of this exercise — that's the whole point of doing it word by word instead of leaning on someone else's finished sentence.
 
-## Doing this at scale
+## Exhaustive Citation (Bulk Extraction / Map-Reduce)
 
-If several passages or several pages need glossing, this parallelizes cleanly: each passage's citation-verification and word segmentation is independent of every other passage, so one subagent per page (or per passage, for a very long page) works well, as long as each one gets the same local source-file path and the same method above rather than being told to search the web fresh each time. Give each one the worked example from Step 5 as a template to match, not just a description of the format — that's what actually keeps 20+ parallel outputs consistent with each other.
+When the user asks to extract *all* occurrences of a specific concept/word from the entire corpus (e.g., "Pull each of the 122 occurrences into this note"), do NOT attempt to parse the entire XML or generate the glosses in a single agent session. This will exceed context limits and corrupt the formatting. Instead, use the built-in Map-Reduce workflow:
+
+### 1. Extract and Chunk targets
+Run the bundled `extract_tei_targets.py` script to pull all sentences matching the target word/regex from the TEI XML into JSON chunks. This script preserves the exact Bekker/Stephanus line numbers.
+
+```bash
+python3 ~/.gemini/skills/classical-gloss/scripts/extract_tei_targets.py \
+  --xml references/nicomachean-ethics-greek.xml \
+  --pattern 'πρ[αάᾶ]ξ[ιε][\p{L}\p{M}]*' \
+  --chunk-size 10 \
+  --out-prefix chunk_targets
+```
+
+### 2. Dispatch Parallel Subagents
+Invoke parallel subagents (one for each JSON chunk). **CRITICAL:** You must explicitly instruct every subagent to format their outputs exactly as `ngloss` bracketed blocks (using the example from Step 5) and to write their output to `out_chunk_N.md`. Do not trust subagents to remember the format without strict instructions or providing them with the `align_interlinear.py` script.
+
+### 3. Assemble and Append
+Once all subagents finish, use the bundled `assemble_glosses.py` to safely concatenate their markdown outputs and append them directly to the target file. This bypasses your own context window limits and avoids hallucination.
+
+```bash
+python3 ~/.gemini/skills/classical-gloss/scripts/assemble_glosses.py \
+  --chunks 'out_chunk_*.md' \
+  --target concepts/target_file.md \
+  --heading 'Exhaustive Citations'
+```
